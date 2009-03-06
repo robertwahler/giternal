@@ -24,7 +24,7 @@ module Giternal
         if !File.exist?(repo_path + '/.git')
           raise "Directory '#{@name}' exists but is not a git repository"
         else
-					update_output { `cd #{repo_path} && git pull 2>&1` }
+          update_output { `cd #{repo_path} && git pull 2>&1` }
         end
       else
         update_output { `cd #{checkout_path} && git clone #{@repo_url} #{@name}` }
@@ -75,18 +75,18 @@ module Giternal
       @rel_path + '/' + @name
     end
 
-		def update_output(&block)
-			puts "Updating #{@name}" if verbose
-			block.call
-			puts " ..updated\n" if verbose
-		end
+    def update_output(&block)
+      puts "Updating #{@name}" if verbose
+      block.call
+      puts " ..updated\n" if verbose
+    end
 
-		def git_ignore_self
-		  Dir.chdir(@base_dir) do
-		    unless File.exist?('.gitignore') && File.read('.gitignore').include?(rel_repo_path)
-		      `echo '#{rel_repo_path}' >> .gitignore`
-		    end
-		  end
-		end
+    def git_ignore_self
+      Dir.chdir(@base_dir) do
+        unless File.exist?('.gitignore') && File.read('.gitignore').include?(rel_repo_path)
+          `echo '#{rel_repo_path}' >> .gitignore`
+        end
+      end
+    end
   end
 end
