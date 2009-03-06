@@ -40,9 +40,9 @@ module Giternal
       @repository.update
     end
 
-    it "should not show output when verbose mode is on" do
+    it "should show output when verbose mode is on" do
       @repository.verbose = true
-      @repository.should_receive(:puts).any_number_of_times
+      @repository.should_receive(:puts).at_least(1).times
       @repository.update
     end
 
