@@ -77,7 +77,8 @@ module Giternal
 
     def update_output(&block)
       puts "Updating #{@name}" if verbose
-      block.call
+      result = block.call
+      puts result if verbose
       puts " ..updated\n" if verbose
     end
 
