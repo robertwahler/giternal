@@ -10,6 +10,7 @@ module Giternal
                                    'dependencies')
     end
 
+    describe "update" do
     it "should check itself out to a dir" do
       @repository.update
       File.file?(GiternalHelper.checked_out_path('foo/foo')).should be_true
@@ -60,6 +61,7 @@ module Giternal
       lambda {
         @repository.update
       }.should raise_error(/Directory 'foo' exists but is not a git repository/)
+    end
     end
 
     describe "freezify" do
