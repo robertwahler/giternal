@@ -11,57 +11,57 @@ module Giternal
     end
 
     describe "update" do
-    it "should check itself out to a dir" do
-      @repository.update
-      File.file?(GiternalHelper.checked_out_path('foo/foo')).should be_true
-      File.read(GiternalHelper.checked_out_path('foo/foo')).strip.
-        should == 'foo'
-    end
-
-    it "should be ignored from git" do
-      @repository.update
-      Dir.chdir(GiternalHelper.base_project_dir) do
-        # TODO: What I really want is to say it shouldn't include 'foo'
-        `git status`.should_not include('dependencies')
-      end
-    end
-
-    it "should only add itself to .gitignore if it's not already there" do
-      2.times { @repository.update }
-      Dir.chdir(GiternalHelper.base_project_dir) do
-        File.read('.gitignore').scan(/foo/).should have(1).item
-        # TODO: What I really want is to say it shouldn't include 'foo'
-        `git status`.should_not include('dependencies')
-      end
-    end
-
-    it "should not show any output when verbose mode is off" do
-      @repository.verbose = false
-      @repository.should_not_receive(:puts)
-      @repository.update
-    end
-
-    it "should show output when verbose mode is on" do
-      @repository.verbose = true
-      @repository.should_receive(:puts).at_least(1).times
-      @repository.update
-    end
-
-    it "should update the repo when it's already been checked out" do
-      @repository.update
-      GiternalHelper.add_content 'foo', 'newfile'
-      @repository.update
-      File.file?(GiternalHelper.checked_out_path('foo/newfile')).should be_true
-      File.read(GiternalHelper.checked_out_path('foo/newfile')).strip.
-        should == 'newfile'
-    end
-
-    it "should raise an error if the directory exists but there's no .git dir" do
-      FileUtils.mkdir_p(GiternalHelper.checked_out_path('foo'))
-      lambda {
+      it "should check itself out to a dir" do
         @repository.update
-      }.should raise_error(/Directory 'foo' exists but is not a git repository/)
-    end
+        File.file?(GiternalHelper.checked_out_path('foo/foo')).should be_true
+        File.read(GiternalHelper.checked_out_path('foo/foo')).strip.
+          should == 'foo'
+      end
+
+      it "should be ignored from git" do
+        @repository.update
+        Dir.chdir(GiternalHelper.base_project_dir) do
+          # TODO: What I really want is to say it shouldn't include 'foo'
+          `git status`.should_not include('dependencies')
+        end
+      end
+
+      it "should only add itself to .gitignore if it's not already there" do
+        2.times { @repository.update }
+        Dir.chdir(GiternalHelper.base_project_dir) do
+          File.read('.gitignore').scan(/foo/).should have(1).item
+          # TODO: What I really want is to say it shouldn't include 'foo'
+          `git status`.should_not include('dependencies')
+        end
+      end
+
+      it "should not show any output when verbose mode is off" do
+        @repository.verbose = false
+        @repository.should_not_receive(:puts)
+        @repository.update
+      end
+
+      it "should show output when verbose mode is on" do
+        @repository.verbose = true
+        @repository.should_receive(:puts).at_least(1).times
+        @repository.update
+      end
+
+      it "should update the repo when it's already been checked out" do
+        @repository.update
+        GiternalHelper.add_content 'foo', 'newfile'
+        @repository.update
+        File.file?(GiternalHelper.checked_out_path('foo/newfile')).should be_true
+        File.read(GiternalHelper.checked_out_path('foo/newfile')).strip.
+          should == 'newfile'
+      end
+
+      it "should raise an error if the directory exists but there's no .git dir" do
+        FileUtils.mkdir_p(GiternalHelper.checked_out_path('foo'))
+        lambda {
+          @repository.update
+        }.should raise_error(/Directory 'foo' exists but is not a git repository/)
+      end
     end
 
     describe "freezify" do
