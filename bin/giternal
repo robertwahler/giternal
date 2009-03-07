@@ -6,7 +6,7 @@ end
 require 'giternal'
 
 action = ARGV[0]
-available_actions = %w(update freeze unfreeze)
+available_actions = %w(status update freeze unfreeze)
 unless available_actions.include?(action)
   puts "Usage: giternal (#{available_actions.join(':')})"
   exit 1

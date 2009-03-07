@@ -45,6 +45,11 @@ module Giternal
         @mock_config.stub!(:each_repo).and_yield(@mock_repo)
       end
 
+      it "should show the status of each of the repositories" do
+        @mock_repo.should_receive(:status)
+        @app.status
+      end
+
       it "should update each of the repositories" do
         @mock_repo.should_receive(:update)
         @app.update

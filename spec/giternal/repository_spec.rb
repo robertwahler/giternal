@@ -10,6 +10,27 @@ module Giternal
                                    'dependencies')
     end
 
+    describe "status" do
+      it "should raise an error if the directory exists but there's no .git dir" do
+        FileUtils.mkdir_p(GiternalHelper.checked_out_path('foo'))
+        lambda {
+          @repository.status
+        }.should raise_error(/Directory 'foo' exists but is not a git repository/)
+      end
+      it "should show output regardless of verbose mode" do
+        @repository.verbose = false
+        @repository.should_receive(:puts).at_least(1).times
+        @repository.status
+      end
+      it "should say it 'frozen' when frozen" do
+        @repository.verbose = true
+        @repository.update
+        @repository.freezify
+        @repository.should_receive(:puts).with(/is frozen/).exactly(1).times
+        @repository.status
+      end
+    end
+
     describe "update" do
       it "should check itself out to a dir" do
         @repository.update

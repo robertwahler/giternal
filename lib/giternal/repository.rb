@@ -15,6 +15,21 @@ module Giternal
       @verbose = self.class.verbose
     end
 
+    def status
+      if frozen?
+        puts "#{@name} is frozen"
+      elsif File.exist?(checkout_path)
+        if !File.exist?(repo_path + '/.git')
+          raise "Directory '#{@name}' exists but is not a git repository"
+        else
+          status_output { `cd #{repo_path} && git status 2>&1` }
+        end
+      else
+        puts "#{@name} does not exist, run update first"
+      end
+      true
+    end
+
     def update
       git_ignore_self
 
@@ -73,6 +88,12 @@ module Giternal
 
     def rel_repo_path
       @rel_path + '/' + @name
+    end
+
+    def status_output(&block)
+      puts "Getting status of #{@name}" if verbose
+      result = block.call
+      puts result
     end
 
     def update_output(&block)

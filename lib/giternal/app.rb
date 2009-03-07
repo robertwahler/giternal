@@ -4,6 +4,10 @@ module Giternal
       @base_dir = base_dir
     end
 
+    def status
+      config.each_repo {|r| r.status }
+    end
+
     def update
       config.each_repo {|r| r.update }
     end
