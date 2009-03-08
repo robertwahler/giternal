@@ -18,7 +18,7 @@ module Giternal
     def status
       if frozen?
         puts "#{@name} is frozen"
-      elsif File.exist?(checkout_path)
+      elsif checked_out?
         if !File.exist?(repo_path + '/.git')
           raise "Directory '#{@name}' exists but is not a git repository"
         else

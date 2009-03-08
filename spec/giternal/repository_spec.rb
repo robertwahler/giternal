@@ -29,6 +29,11 @@ module Giternal
         @repository.should_receive(:puts).with(/is frozen/).exactly(1).times
         @repository.status
       end
+      it "should say it 'does not exist' when update has not been run" do
+        @repository.verbose = true
+        @repository.should_receive(:puts).with(/does not exist/).exactly(1).times
+        @repository.status
+      end
     end
 
     describe "update" do
