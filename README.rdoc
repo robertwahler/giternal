@@ -1,6 +1,74 @@
-= giternal
+= Why giternal
 
-Description goes here.
+There are a couple tools out there that keep track of git externals
+for you.  Git submodules are built in, and braid is a different
+project.  They both have problems that prevent them from using those
+externals collaboratively.
+
+In a nutshell, git submodules keep a reference to the head of each
+external project.  This means that if Joe and Sarah each make
+non-conflicting changes to their externals, and push the external
+reference in the main project, one of them will get a conflict on
+update.  Braid doesn't treat the externals as being separate from the
+main project, so any commits you make will go to the parent instead of
+the external.
+
+In order to demonstrate these issues more concretely, I've written a
+script that will simulate the workflow of making changes to an
+external, pushing it upstream, and pulling it into another project.
+You'll notice in the submodule example that there's a conflict when
+updating the main repo, and files are missing in the local external
+after update.  In the braid example, the changes never make it
+upstream.  This script checks to see if a tool allows you to not only
+track dependencies but collaborate as well.  To execute it, run
+
+ruby test_trackers.rb giternal|submodules|braid
+
+= Using it
+
+Put a file in your project named .giternal.yml or config/giternal.yml,
+that looks like this:
+
+  local_dir_name:
+    repo: git://path/to/repo.git
+    path: local/sub/dir
+
+As an example, here's how you'd track rspec:
+
+  rspec:
+    repo: git://github.com/dchelimsky/rspec.git
+    path: vendor/plugins
+
+To pull the externals into your workspace, run "giternal update".  You
+should add vendor/plugins/rspec to .gitignore to keep the files from
+being added to your main repo.
+
+= Deploying externals
+
+I frequently use a cap task that changes to deploy_root and runs
+"giternal update" to pull all the externals.  The downside with this
+approach is that you'll get the bleeding edge of your external, and
+you may want to use a particular version that you've tested and know
+works with your app.  Enter freezing.
+
+Make sure your working dir is clean and then run "giternal freeze".
+The externals are no longer separate repos - the history was zipped up
+so that the external can be unfrozen later.  Each external is added to
+the git index, so all you have to do is commit.  You've got a
+self-contained external that is frozen to a working version, suitable
+for deploy.
+
+After you've tagged your release, you can unfreeze the giternal with
+"giternal unfreeze" and get back to development.
+
+= How I want to work with externals
+
+When tracking externals, the most important thing is knowing my
+libraries work together, and second I can try to stay up to date.
+When I update an external, I would run rake.  If it passes, keep that
+version.  If not, look at what it would take to take for my code and
+the library code to work.  If I feel like I can do it, I do, otherwise
+I unfreeze and stay on the older working version.
 
 == Copyright
 

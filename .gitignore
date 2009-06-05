@@ -2,3 +2,4 @@ spec/test_repos
 pkg
 features/tmp
 tags
+test_repos
