@@ -42,7 +42,7 @@ module Giternal
           update_output { `cd #{repo_path} && git pull 2>&1` }
         end
       else
-        update_output { `cd #{checkout_path} && git clone #{@repo_url} #{@name}` }
+        update_output { `cd #{checkout_path} && git clone #{@repo_url} #{@name} 2>&1` }
       end
       true
     end

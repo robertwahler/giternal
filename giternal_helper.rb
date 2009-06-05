@@ -31,7 +31,7 @@ class GiternalHelper
   end
 
   def self.run(*args)
-    `#{giternal_base}/bin/giternal #{args.join(' ')}`
+    `#{giternal_base}/bin/giternal #{args.join(' ')} 2>&1`
   end
 
   def self.create_repo(repo_name)
@@ -70,6 +70,12 @@ class GiternalHelper
 
   def self.clean!
     FileUtils.rm_rf tmp_path
+  end
+
+  def self.status_externals
+    Dir.chdir(tmp_path + '/main_repo') do
+      GiternalHelper.run('status')
+    end
   end
 
   def self.update_externals

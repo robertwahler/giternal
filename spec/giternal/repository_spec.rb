@@ -23,7 +23,7 @@ module Giternal
         @repository.status
       end
       it "should say it 'frozen' when frozen" do
-        @repository.verbose = true
+        @repository.verbose = false
         @repository.update
         @repository.freezify
         @repository.should_receive(:puts).with(/is frozen/).exactly(1).times
