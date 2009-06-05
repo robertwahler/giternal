@@ -17,21 +17,19 @@ module Giternal
           @repository.status
         }.should raise_error(/Directory 'foo' exists but is not a git repository/)
       end
-      it "should show output regardless of verbose mode" do
-        @repository.verbose = false
-        @repository.should_receive(:puts).at_least(1).times
+      it "should say 'nothing to commit' if updated" do
+        @repository.update
+        @repository.should_receive(:puts).with(/nothing to commit/).exactly(1).times
         @repository.status
       end
-      it "should say it 'frozen' when frozen" do
-        @repository.verbose = false
+      it "should say 'run update first' unless repo exists" do
+        @repository.should_receive(:puts).with(/run update first/).exactly(1).times
+        @repository.status
+      end
+      it "should say 'frozen' when frozen" do
         @repository.update
         @repository.freezify
         @repository.should_receive(:puts).with(/is frozen/).exactly(1).times
-        @repository.status
-      end
-      it "should say it 'does not exist' when update has not been run" do
-        @repository.verbose = true
-        @repository.should_receive(:puts).with(/does not exist/).exactly(1).times
         @repository.status
       end
     end

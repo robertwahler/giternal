@@ -4,30 +4,54 @@ module Giternal
       @base_dir = base_dir
     end
 
-    def status
-      config.each_repo {|r| r.status }
+    def status(repos=[])
+      config.each_repo do |r| repos 
+        unless repos.empty?
+          r.status if repos.include?(r.name)
+        else
+          r.status 
+        end
+      end 
     end
 
-    def update
-      config.each_repo {|r| r.update }
+    def update(repos=[])
+      config.each_repo do |r| repos 
+        unless repos.empty?
+          r.update if repos.include?(r.name)
+        else
+          r.update 
+        end
+      end 
     end
 
-    def freezify
-      config.each_repo {|r| r.freezify }
+    def freezify(repos=[])
+      config.each_repo do |r| repos 
+        unless repos.empty?
+          r.freezify if repos.include?(r.name)
+        else
+          r.freezify 
+        end
+      end 
     end
 
-    def unfreezify
-      config.each_repo {|r| r.unfreezify }
+    def unfreezify(repos=[])
+      config.each_repo do |r| repos 
+        unless repos.empty?
+          r.unfreezify if repos.include?(r.name)
+        else
+          r.unfreezify 
+        end
+      end 
     end
 
-    def run(action)
+    def run(action, repos)
       case action
       when "freeze"
-        freezify
+        freezify repos
       when "unfreeze"
-        unfreezify
+        unfreezify repos
       else
-        send(action)
+        send(action, repos)
       end
     end
 

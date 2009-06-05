@@ -77,6 +77,10 @@ module Giternal
       File.exist?(repo_path)
     end
 
+    def name
+      @name
+    end
+
     private
     def checkout_path
       File.expand_path(File.join(@base_dir, @rel_path))

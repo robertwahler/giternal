@@ -5,13 +5,14 @@ if File.exist?(File.dirname(__FILE__) + '/../lib/giternal.rb')
 end
 require 'giternal'
 
-action = ARGV[0]
+action = ARGV.shift
+repos = ARGV
 available_actions = %w(status update freeze unfreeze)
 unless available_actions.include?(action)
-  puts "Usage: giternal (#{available_actions.join(':')})"
+  puts "Usage: giternal (#{available_actions.join(':')}) [repos]"
   exit 1
 end
 
 Giternal::Repository.verbose = true
 app = Giternal::App.new(FileUtils.pwd)
-app.run(action)
+app.run(action, repos)
