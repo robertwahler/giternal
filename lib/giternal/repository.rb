@@ -1,5 +1,10 @@
 require 'fileutils'
 
+require 'term/ansicolor'
+class String
+  include Term::ANSIColor
+end
+
 module Giternal
   class Repository
     class << self
@@ -17,7 +22,7 @@ module Giternal
 
     def status
       if frozen?
-        puts "#{@name} is frozen"
+        puts "#{@name} is frozen".cyan
       elsif checked_out?
         if !File.exist?(repo_path + '/.git')
           raise "Directory '#{@name}' exists but is not a git repository"
@@ -25,7 +30,7 @@ module Giternal
           status_output { `cd #{repo_path} && git status 2>&1` }
         end
       else
-        puts "#{@name} does not exist, run update first"
+        puts "#{@name} does not exist, run update first".red
       end
       true
     end
@@ -33,7 +38,11 @@ module Giternal
     def update
       git_ignore_self
 
-      return true if frozen?
+      if frozen?
+        puts "#{@name} is frozen".cyan
+        return true
+      end
+
       FileUtils.mkdir_p checkout_path unless File.exist?(checkout_path)
       if checked_out?
         if !File.exist?(repo_path + '/.git')

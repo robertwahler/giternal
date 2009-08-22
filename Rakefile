@@ -9,6 +9,7 @@ begin
     gem.email = "pat.maddox@gmail.com"
     gem.homepage = "http://github.com/pat-maddox/giternal"
     gem.authors = ["Pat Maddox"]
+    gem.add_dependency 'term-ansicolor'
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
