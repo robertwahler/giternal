@@ -17,9 +17,9 @@ module Giternal
           @repository.status
         }.should raise_error(/Directory 'foo' exists but is not a git repository/)
       end
-      it "should say 'nothing to commit', 'Last commit' if updated" do
+      it "should say 'Last commit' if updated" do
         @repository.update
-        @repository.should_receive(:puts).with(/nothing to commit/).exactly(1).times
+        @repository.should_not_receive(:puts).with(/nothing to commit/)
         @repository.should_receive(:puts).with(/Last commit/).exactly(1).times
         @repository.status
       end
@@ -31,6 +31,13 @@ module Giternal
         @repository.update
         @repository.freezify
         @repository.should_receive(:puts).with(/is frozen/).exactly(1).times
+        @repository.status
+      end
+
+      # TODO: add sha, parse git status command for 'nothing to commit'
+      it "should say 'is clean' when the working folder is not frozen and clean" do
+        @repository.update
+        @repository.should_receive(:puts).with(/is clean/).exactly(1).times
         @repository.status
       end
     end

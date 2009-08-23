@@ -23,6 +23,7 @@ module Giternal
     def status
       if frozen?
         log = execute_on_frozen { `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr" 2>&1` } 
+        # TODO: sha = log.match("/Last commit (.*) was/")
         message = "#{@name} is frozen"
         message = "#{message}: #{log}" 
         puts message.cyan
@@ -30,8 +31,20 @@ module Giternal
         if !File.exist?(repo_path + '/.git')
           raise "Directory '#{@name}' exists but is not a git repository"
         else
-          status_output { `cd #{repo_path} && git status 2>&1` }
-          status_output { `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr on %cD" 2>&1` }
+          # TODO: move this up to method top
+          #puts "Getting status of #{@name}" if verbose
+          status = `cd #{repo_path} && git status 2>&1` 
+          log = `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr on %cr" 2>&1` 
+          # check if clean, format one line if so
+          if status.match(/nothing to commit/) then
+            message = "#{@name} is clean"
+            message = "#{message}: #{log}" 
+            puts message
+          else
+            puts status
+            # todo colorize log
+            puts log
+          end
         end
       else
         puts "#{@name} does not exist, run update first".red
