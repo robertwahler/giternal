@@ -22,12 +22,16 @@ module Giternal
 
     def status
       if frozen?
-        puts "#{@name} is frozen".cyan
+        log = execute_on_frozen { `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr" 2>&1` } 
+        message = "#{@name} is frozen"
+        message = "#{message}: #{log}" 
+        puts message.cyan
       elsif checked_out?
         if !File.exist?(repo_path + '/.git')
           raise "Directory '#{@name}' exists but is not a git repository"
         else
           status_output { `cd #{repo_path} && git status 2>&1` }
+          status_output { `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr on %cD" 2>&1` }
         end
       else
         puts "#{@name} does not exist, run update first".red
@@ -54,6 +58,21 @@ module Giternal
         update_output { `cd #{checkout_path} && git clone #{@repo_url} #{@name} 2>&1` }
       end
       true
+    end
+
+    def execute_on_frozen(&block)
+      raise "execute_on_frozen called on unfrozen repo" unless frozen?
+      result = ""
+      
+      # unpack repo temporarily
+      Dir.chdir(repo_path) do
+        `tar xzf .git.frozen.tgz`
+        result = block.call
+        # clean up
+        FileUtils.rm_r('.git')
+      end
+
+      result
     end
 
     def freezify
@@ -102,6 +121,7 @@ module Giternal
     def rel_repo_path
       @rel_path + '/' + @name
     end
+
 
     def status_output(&block)
       puts "Getting status of #{@name}" if verbose
