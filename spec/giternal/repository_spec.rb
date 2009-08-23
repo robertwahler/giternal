@@ -17,9 +17,10 @@ module Giternal
           @repository.status
         }.should raise_error(/Directory 'foo' exists but is not a git repository/)
       end
-      it "should say 'nothing to commit' if updated" do
+      it "should say 'nothing to commit', 'Last commit' if updated" do
         @repository.update
         @repository.should_receive(:puts).with(/nothing to commit/).exactly(1).times
+        @repository.should_receive(:puts).with(/Last commit/).exactly(1).times
         @repository.status
       end
       it "should say 'run update first' unless repo exists" do
