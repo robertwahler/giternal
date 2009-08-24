@@ -11,40 +11,57 @@ module Giternal
       attr_accessor :verbose
     end
     attr_accessor :verbose
+    attr_accessor :last_commit
 
-    def initialize(base_dir, name, repo_url, rel_path)
+    def initialize(base_dir, name, repo_url, rel_path, attributes={})
       @base_dir = base_dir
       @name = name
       @repo_url = repo_url
       @rel_path = rel_path
       @verbose = self.class.verbose
+      @last_commit = attributes.delete("last_commit")
     end
 
     def status
+      log = nil
+      actual_commit = nil
+
       puts "Getting status of #{@name}" if verbose
       if frozen?
         log = execute_on_frozen { `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr" 2>&1` } 
-        # TODO: sha = log.match("/Last commit (.*) was/")
+        actual_commit = log.gsub(/Last commit (.*) was(.*)/, '\1')
         message = "#{@name} is frozen"
         message = "#{message}: #{log}" 
-        puts message.cyan
+        if ((actual_commit == @last_commit) || @last_commit.nil? )
+          puts message.cyan
+        else
+          message = "#{message}. Config last commit: #{@last_commit}" 
+          puts message.yellow.bold
+        end
+        @last_commit = actual_commit
       elsif checked_out?
         if !File.exist?(repo_path + '/.git')
           raise "Directory '#{@name}' exists but is not a git repository"
         else
           status = `cd #{repo_path} && git status 2>&1` 
           log = `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr" 2>&1` 
+          actual_commit = log.gsub(/Last commit (.*) was(.*)/, '\1')
           # check if clean, format one line if so
           if status.match(/nothing to commit/) then
             message = "#{@name} is clean"
             message = "#{message}: #{log}" 
-            puts message
+            if ((actual_commit == @last_commit) || @last_commit.nil? )
+              puts message
+            else
+              message = "#{message}. Config last commit: #{@last_commit}" 
+              puts message.yellow
+            end
           else
             puts "#{@name} has changed".yellow
             puts status
-            # todo colorize log
             puts log
           end
+          @last_commit = actual_commit
         end
       else
         puts "#{@name} does not exist, run update first".red

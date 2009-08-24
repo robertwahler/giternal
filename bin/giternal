@@ -18,6 +18,7 @@ OptionParser.new do |opts|
   # set defaults
   options.verbose = false
   options.coloring = true
+  options.config_update = false
 
   opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
     options.verbose = v
@@ -25,6 +26,10 @@ OptionParser.new do |opts|
 
   opts.on("-c", "--[no-]coloring", "Ansi color in output") do |c|
     options.coloring = c
+  end
+
+  opts.on("-u", "--[no-]config-update", "Rewrite giternal.yml including last commit sha") do |u|
+    options.config_update = u
   end
 
   # no argument, shows at tail.  This will print an options summary.
@@ -51,4 +56,5 @@ else
 end
 
 app = Giternal::App.new(FileUtils.pwd)
+app.config_update = options.config_update
 app.run(action, repos)

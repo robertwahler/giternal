@@ -47,6 +47,8 @@ module Giternal
 
       it "should show the status of each of the repositories" do
         @mock_repo.should_receive(:status)
+        @mock_repo.should_receive(:last_commit)
+        @mock_repo.should_receive(:name)
         @app.status
       end
 

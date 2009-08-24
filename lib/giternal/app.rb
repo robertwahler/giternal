@@ -1,5 +1,6 @@
 module Giternal
   class App
+    attr_accessor :config_update
     def initialize(base_dir)
       @base_dir = base_dir
     end
@@ -14,7 +15,9 @@ module Giternal
         else
           r.status 
         end
+        config.config_update(r.name, {"last_commit" => r.last_commit})
       end 
+      save if config_update
     end
 
     def update(repos=[])
@@ -58,19 +61,23 @@ module Giternal
       end
     end
 
+    def save
+      @config.save(@config_file)
+    end
+
     def config
       return @config if @config
 
-      config_file = ['config/giternal.yml', '.giternal.yml'].detect do |file|
+      @config_file = ['config/giternal.yml', '.giternal.yml'].detect do |file|
         File.file? File.expand_path(@base_dir + '/' + file)
       end
 
-      if config_file.nil?
+      if @config_file.nil?
         $stderr.puts "config/giternal.yml is missing"
         exit 1
       end
 
-      @config = YamlConfig.new(@base_dir, File.read(config_file))
+      @config = YamlConfig.new(@base_dir, File.read(@config_file))
     end
   end
 end
