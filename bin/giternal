@@ -4,15 +4,40 @@ if File.exist?(File.dirname(__FILE__) + '/../lib/giternal.rb')
   $:.unshift(File.dirname(__FILE__) + '/../lib')
 end
 require 'giternal'
+require 'optparse'
+require 'ostruct'
+
+available_actions = %w(status update freeze unfreeze)
+options = OpenStruct.new
+OptionParser.new do |opts|
+  opts.banner = "Usage: giternal ACTION [options] [repos]\n\n" +
+                "Actions: #{available_actions.join(' ')}\n\n" +
+                "Options:"
+
+  # set defaults
+  options.verbose = false
+
+  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+    options.verbose = v
+  end
+
+
+  # no argument, shows at tail.  This will print an options summary.
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+
+end.parse!  # parse and remove options from commandline
 
 action = ARGV.shift
 repos = ARGV
-available_actions = %w(status update freeze unfreeze)
 unless available_actions.include?(action)
-  puts "Usage: giternal (#{available_actions.join(':')}) [repos]"
+  puts "Usage: giternal (#{available_actions.join(':')}) [options] [repos]"
   exit 1
 end
 
-Giternal::Repository.verbose = true
+Giternal::Repository.verbose = options.verbose
+
 app = Giternal::App.new(FileUtils.pwd)
 app.run(action, repos)

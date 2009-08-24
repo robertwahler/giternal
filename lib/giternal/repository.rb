@@ -21,8 +21,7 @@ module Giternal
     end
 
     def status
-      # TODO: enable this when verbose is a command line option
-      #puts "Getting status of #{@name}" if verbose
+      puts "Getting status of #{@name}" if verbose
       if frozen?
         log = execute_on_frozen { `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr" 2>&1` } 
         # TODO: sha = log.match("/Last commit (.*) was/")
