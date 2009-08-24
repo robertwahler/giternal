@@ -21,6 +21,8 @@ module Giternal
     end
 
     def status
+      # TODO: enable this when verbose is a command line option
+      #puts "Getting status of #{@name}" if verbose
       if frozen?
         log = execute_on_frozen { `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr" 2>&1` } 
         # TODO: sha = log.match("/Last commit (.*) was/")
@@ -31,8 +33,6 @@ module Giternal
         if !File.exist?(repo_path + '/.git')
           raise "Directory '#{@name}' exists but is not a git repository"
         else
-          # TODO: move this up to method top
-          #puts "Getting status of #{@name}" if verbose
           status = `cd #{repo_path} && git status 2>&1` 
           log = `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr" 2>&1` 
           # check if clean, format one line if so
@@ -41,6 +41,7 @@ module Giternal
             message = "#{message}: #{log}" 
             puts message
           else
+            puts "#{@name} has changed".yellow
             puts status
             # todo colorize log
             puts log
