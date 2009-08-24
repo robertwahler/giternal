@@ -34,7 +34,7 @@ module Giternal
           # TODO: move this up to method top
           #puts "Getting status of #{@name}" if verbose
           status = `cd #{repo_path} && git status 2>&1` 
-          log = `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr on %cr" 2>&1` 
+          log = `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr" 2>&1` 
           # check if clean, format one line if so
           if status.match(/nothing to commit/) then
             message = "#{@name} is clean"
