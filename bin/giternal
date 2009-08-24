@@ -6,6 +6,7 @@ end
 require 'giternal'
 require 'optparse'
 require 'ostruct'
+require 'term/ansicolor'
 
 available_actions = %w(status update freeze unfreeze)
 options = OpenStruct.new
@@ -16,11 +17,15 @@ OptionParser.new do |opts|
 
   # set defaults
   options.verbose = false
+  options.coloring = true
 
   opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
     options.verbose = v
   end
 
+  opts.on("-c", "--[no-]coloring", "Ansi color in output") do |c|
+    options.coloring = c
+  end
 
   # no argument, shows at tail.  This will print an options summary.
   opts.on_tail("-h", "--help", "Show this message") do
@@ -33,11 +38,17 @@ end.parse!  # parse and remove options from commandline
 action = ARGV.shift
 repos = ARGV
 unless available_actions.include?(action)
-  puts "Usage: giternal (#{available_actions.join(':')}) [options] [repos]"
+  puts "Usage: giternal (#{available_actions.join(':')}) [options] [repos]\n"
+  puts "giternal --help for more information"
   exit 1
 end
 
 Giternal::Repository.verbose = options.verbose
+if STDOUT.isatty
+  Term::ANSIColor::coloring = options.coloring
+else
+  Term::ANSIColor::coloring = false
+end
 
 app = Giternal::App.new(FileUtils.pwd)
 app.run(action, repos)
