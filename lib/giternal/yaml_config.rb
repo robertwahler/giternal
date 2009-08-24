@@ -5,7 +5,6 @@ module Giternal
     def initialize(base_dir, yaml_string)
       @base_dir = base_dir
       @config = YAML.load yaml_string
-      @config = @config.sort
     end
 
     def each_repo
@@ -14,7 +13,7 @@ module Giternal
 
     private
     def repositories
-      @config.map do |name, attributes|
+      @config.sort.map do |name, attributes|
         Repository.new(@base_dir, name, attributes["repo"], attributes["path"])
       end
     end
