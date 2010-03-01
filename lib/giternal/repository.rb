@@ -28,6 +28,7 @@ module Giternal
 
       puts "Getting status of #{@name}" if verbose
       if frozen?
+        # TODO: giternal status should show changes even if frozen
         log = execute_on_frozen { `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr" 2>&1` } 
         actual_commit = log.gsub(/Last commit (.*) was(.*)/, '\1')
         message = "#{@name} is frozen"

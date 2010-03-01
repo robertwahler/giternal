@@ -5,7 +5,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "giternal"
-    gem.summary = %Q{TODO}
+    gem.summary = "git externals"
     gem.email = "pat.maddox@gmail.com"
     gem.homepage = "http://github.com/pat-maddox/giternal"
     gem.authors = ["Pat Maddox"]
