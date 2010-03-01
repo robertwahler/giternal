@@ -7,7 +7,7 @@ module Giternal
 
     def status(repos=[])
       # iterate over each repository in giternal.yml
-      config.each_repo do |r| repos 
+      config.each_repo do |r|
         unless repos.empty?
           # iterate over each of the repos specified on the commandline 
           # and see if it matches the current giternal repo name
@@ -21,7 +21,7 @@ module Giternal
     end
 
     def update(repos=[])
-      config.each_repo do |r| repos 
+      config.each_repo do |r|
         unless repos.empty?
           r.update if repos.find {|repo| r.name.match(/#{repo}/)}
         else
@@ -31,7 +31,7 @@ module Giternal
     end
 
     def freezify(repos=[])
-      config.each_repo do |r| repos 
+      config.each_repo do |r|
         unless repos.empty?
           r.freezify if repos.find {|repo| r.name.match(/#{repo}/)}
         else
@@ -41,7 +41,7 @@ module Giternal
     end
 
     def unfreezify(repos=[])
-      config.each_repo do |r| repos 
+      config.each_repo do |r|
         unless repos.empty?
           r.unfreezify if repos.find {|repo| r.name.match(/#{repo}/)}
         else
