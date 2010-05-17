@@ -76,3 +76,9 @@ end
 Then /'(.*)' should be removed from the commit index/ do |repo_name|
   repo_name.should_not be_added_to_commit_index
 end
+
+Then /^the file "([^\"]*)" should contain the sha for "([^\"]*)"$/ do |file, repo_name|
+   last_commit = GiternalHelper.repo_shas(repo_name).first
+   check_file_content(file, last_commit, true)
+end
+

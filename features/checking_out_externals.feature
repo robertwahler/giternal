@@ -35,5 +35,5 @@ Feature: Checking out and updating externals
     And I run "giternal update"
     Then the file "config/giternal.yml" should not contain "last_commit"
     When I run "giternal status --config-update"
-    Then the file "config/giternal.yml" should contain "last_commit"
+    Then the file "config/giternal.yml" should contain the sha for "first_external" 
 
