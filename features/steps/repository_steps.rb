@@ -27,30 +27,6 @@ def be_added_to_commit_index
   end
 end
 
-def status_externals
-  Dir.chdir(current_dir + '/main_repo') do
-    run('giternal status', false)
-  end
-end
-
-def update_externals
-  Dir.chdir(current_dir + '/main_repo') do
-    run('giternal update', false)
-  end
-end
-
-def freeze_externals
-  Dir.chdir(current_dir + '/main_repo') do
-    run('giternal freeze', false)
-  end
-end
-
-def unfreeze_externals
-  Dir.chdir(current_dir + '/main_repo') do
-    run('giternal unfreeze', false)
-  end
-end
-
 Before do
   GiternalHelper.create_main_repo
 end
@@ -65,32 +41,12 @@ Given /'(.*)' is not yet checked out/ do |repo_name|
   File.directory?(GiternalHelper.checked_out_path(repo_name)).should == false
 end
 
-Given "the externals are up to date" do
-  update_externals
-end
-
-Given "the externals are frozen" do
-  freeze_externals
-end
-
 Given /content is added to '(.*)'/ do |repo_name|
   GiternalHelper.add_content(repo_name)
 end
 
 Given /^the external '(.*)' has been added to \.gitignore$/ do |repo_name|
   GiternalHelper.add_external_to_ignore(repo_name)
-end
-
-When "I update the externals" do
-  update_externals
-end
-
-When "I freeze the externals" do
-  freeze_externals
-end
-
-When "I unfreeze the externals" do
-  unfreeze_externals
 end
 
 Then /'(.*)' should be checked out/ do |repo_name|

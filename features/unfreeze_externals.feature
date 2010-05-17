@@ -6,8 +6,9 @@ Feature: Unfreeze externals
 
   Scenario: Main project has one frozen external
     Given an external repository named 'first_external'
-    And the externals are up to date
-    And the externals are frozen
-    When I unfreeze the externals
+    When I cd to "main_repo"
+    And I run "giternal update"
+    And I run "giternal freeze"
+    And I run "giternal unfreeze"
     Then 'first_external' should be a git repo
     And 'first_external' should be removed from the commit index

@@ -7,20 +7,32 @@ Feature: Checking out and updating externals
   Scenario: Repository is not yet checked out
     Given an external repository named 'first_external'
     And 'first_external' is not yet checked out
-    When I update the externals
+    When I cd to "main_repo"
+    And I run "giternal update"
     Then 'first_external' should be checked out
 
   Scenario: Multiple externals
     Given an external repository named 'first_external'
     And an external repository named 'second_external'
-    When I update the externals
+    When I cd to "main_repo"
+    And I run "giternal update"
     Then 'first_external' should be checked out
     And 'second_external' should be checked out
 
   Scenario: Repository checked out then updated
     Given an external repository named 'first_external'
-    And the externals are up to date
+    When I cd to "main_repo"
+    And I run "giternal update"
     And content is added to 'first_external'
     Then 'first_external' should not be up to date
-    When I update the externals
+    When I run "giternal update"
     Then 'first_external' should be up to date
+
+  Scenario: Updating the last commit sha
+    Given an external repository named 'first_external'
+    And 'first_external' is not yet checked out
+    When I cd to "main_repo"
+    And I run "giternal update"
+    And I run "giternal status --config-update"
+    Then the file "config/giternal.yml" should contain "last_commit"
+
