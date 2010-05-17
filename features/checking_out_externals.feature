@@ -33,6 +33,7 @@ Feature: Checking out and updating externals
     And 'first_external' is not yet checked out
     When I cd to "main_repo"
     And I run "giternal update"
-    And I run "giternal status --config-update"
+    Then the file "config/giternal.yml" should not contain "last_commit"
+    When I run "giternal status --config-update"
     Then the file "config/giternal.yml" should contain "last_commit"
 
