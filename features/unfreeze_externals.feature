@@ -1,4 +1,4 @@
-Story: Unfreeze externals
+Feature: Unfreeze externals
   As a developer
   I want to unfreeze externals
   So that I can continue to update and develop on them

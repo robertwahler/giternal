@@ -1,4 +1,4 @@
-Story: Freeze externals
+Feature: Freeze externals
   As a developer
   I want to freeze externals
   So that I can test and deploy my app with no worries
