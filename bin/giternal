@@ -19,6 +19,7 @@ OptionParser.new do |opts|
   options.verbose = false
   options.coloring = true
   options.config_update = false
+  options.detach = false
 
   opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
     options.verbose = v
@@ -28,8 +29,12 @@ OptionParser.new do |opts|
     options.coloring = c
   end
 
-  opts.on("-u", "--[no-]config-update", "Rewrite giternal.yml including last commit sha") do |u|
+  opts.on("-u", "--[no-]config-update", "'Status' action to rewrite giternal.yml with the last commit sha") do |u|
     options.config_update = u
+  end
+
+  opts.on("-d", "--[no-]detach", "'Update' action will detach (pin) repo using the last commit sha from giternal.yml") do |d|
+    options.detach = d
   end
 
   # no argument, shows at tail.  This will print an options summary.
@@ -57,4 +62,13 @@ end
 
 app = Giternal::App.new(FileUtils.pwd)
 app.config_update = options.config_update
+app.detach = options.detach
+
+# sanity check options
+if app.detach && action != 'update'
+  puts "bad"
+  puts "detach option is only valid with update action"
+  exit 1
+end
+
 app.run(action, repos)

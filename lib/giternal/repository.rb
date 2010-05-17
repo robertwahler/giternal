@@ -70,8 +70,9 @@ module Giternal
       true
     end
 
-    def update
+    def update(options={})
       git_ignore_self
+      detach = options[:detach]
 
       if frozen?
         puts "#{@name} is frozen".cyan
@@ -83,11 +84,17 @@ module Giternal
         if !File.exist?(repo_path + '/.git')
           raise "Directory '#{@name}' exists but is not a git repository"
         else
-          update_output { `cd #{repo_path} && git pull 2>&1` }
+          update_output { `cd #{repo_path} && git checkout master 2>&1 && git pull 2>&1` }
         end
       else
         update_output { `cd #{checkout_path} && git clone #{@repo_url} #{@name} 2>&1` }
       end
+
+      # pin a repo by detaching it to the last_commit stored in giternal.yml
+      if detach
+        update_output { `cd #{repo_path} && git checkout #{@last_commit} 2>&1` }
+      end
+
       true
     end
 

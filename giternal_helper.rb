@@ -43,11 +43,20 @@ class GiternalHelper
     add_to_config_file repo_name
   end
 
-  # return an array of git shas last is the oldest
-  def self.repo_shas(repo_name)
+  # return an array of git commit shas, last is the oldest
+  def self.external_shas(repo_name)
     shas = ''
     Dir.chdir(tmp_path) do
       shas = `cd externals/#{repo_name} && git log --pretty="%h"`
+    end
+    shas.split(/\n/)
+  end
+  
+  # return an array of git commit shas, last is the oldest
+  def self.repo_shas(repo_name)
+    shas = ''
+    Dir.chdir(tmp_path) do
+      shas = `cd main_repo/dependencies/#{repo_name} && git log --pretty="%h"`
     end
     shas.split(/\n/)
   end

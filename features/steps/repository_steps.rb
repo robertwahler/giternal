@@ -82,3 +82,8 @@ Then /^the file "([^\"]*)" should contain the sha for "([^\"]*)"$/ do |file, rep
    check_file_content(file, last_commit, true)
 end
 
+Then /^the file "([^\"]*)" should not contain the sha for "([^\"]*)"$/ do |file, repo_name|
+   last_commit = GiternalHelper.repo_shas(repo_name).first
+   check_file_content(file, last_commit, false)
+end
+

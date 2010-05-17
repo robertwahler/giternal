@@ -1,6 +1,6 @@
 module Giternal
   class App
-    attr_accessor :config_update
+    attr_accessor :config_update, :detach
     def initialize(base_dir)
       @base_dir = base_dir
     end
@@ -21,11 +21,12 @@ module Giternal
     end
 
     def update(repos=[])
+      options = {:detach => @detach}
       config.each_repo do |r|
         unless repos.empty?
-          r.update if repos.find {|repo| r.name.match(/#{repo}/)}
+          r.update(options) if repos.find {|repo| r.name.match(/#{repo}/)}
         else
-          r.update 
+          r.update(options) 
         end
       end 
     end
