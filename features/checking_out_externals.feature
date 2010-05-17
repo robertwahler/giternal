@@ -1,3 +1,4 @@
+@announce
 Feature: Checking out and updating externals
   As a developer
   I want to check out and update external projects via git

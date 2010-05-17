@@ -1,3 +1,4 @@
+@announce
 Feature: Unfreeze externals
   As a developer
   I want to unfreeze externals

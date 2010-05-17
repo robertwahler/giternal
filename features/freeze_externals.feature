@@ -1,3 +1,4 @@
+@announce
 Feature: Freeze externals
   As a developer
   I want to freeze externals

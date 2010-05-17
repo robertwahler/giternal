@@ -1,5 +1,3 @@
-require 'spec'
-$:.unshift(File.dirname(__FILE__) + '/../../lib')
 require 'giternal'
 require 'giternal_helper'
 
@@ -29,13 +27,32 @@ def be_added_to_commit_index
   end
 end
 
-Before do
-  GiternalHelper.clean!
-  GiternalHelper.create_main_repo
+def status_externals
+  Dir.chdir(current_dir + '/main_repo') do
+    run('giternal status', false)
+  end
 end
 
-After do
-  GiternalHelper.clean!
+def update_externals
+  Dir.chdir(current_dir + '/main_repo') do
+    run('giternal update', false)
+  end
+end
+
+def freeze_externals
+  Dir.chdir(current_dir + '/main_repo') do
+    run('giternal freeze', false)
+  end
+end
+
+def unfreeze_externals
+  Dir.chdir(current_dir + '/main_repo') do
+    run('giternal unfreeze', false)
+  end
+end
+
+Before do
+  GiternalHelper.create_main_repo
 end
 
 Given /an external repository named '(.*)'/ do |repo_name|
@@ -49,11 +66,11 @@ Given /'(.*)' is not yet checked out/ do |repo_name|
 end
 
 Given "the externals are up to date" do
-  GiternalHelper.update_externals
+  update_externals
 end
 
 Given "the externals are frozen" do
-  GiternalHelper.freeze_externals
+  freeze_externals
 end
 
 Given /content is added to '(.*)'/ do |repo_name|
@@ -65,15 +82,15 @@ Given /^the external '(.*)' has been added to \.gitignore$/ do |repo_name|
 end
 
 When "I update the externals" do
-  GiternalHelper.update_externals
+  update_externals
 end
 
 When "I freeze the externals" do
-  GiternalHelper.freeze_externals
+  freeze_externals
 end
 
 When "I unfreeze the externals" do
-  GiternalHelper.unfreeze_externals
+  unfreeze_externals
 end
 
 Then /'(.*)' should be checked out/ do |repo_name|

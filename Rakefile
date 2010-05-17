@@ -10,6 +10,11 @@ begin
     gem.homepage = "http://github.com/pat-maddox/giternal"
     gem.authors = ["Pat Maddox"]
     gem.add_dependency 'term-ansicolor'
+
+    gem.add_development_dependency "rspec", ">= 1.2.9"
+    gem.add_development_dependency "cucumber", ">= 0.6"
+    gem.add_development_dependency "aruba", ">= 0.1.7"
+    
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError

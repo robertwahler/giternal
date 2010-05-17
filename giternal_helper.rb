@@ -1,6 +1,10 @@
+require 'aruba/api'
+
 class GiternalHelper
+  extend Aruba::Api
+
   @@giternal_base = File.expand_path(File.dirname(__FILE__))
-  
+
   def self.create_main_repo
     FileUtils.mkdir_p tmp_path
     Dir.chdir(tmp_path) do
@@ -19,7 +23,7 @@ class GiternalHelper
   end
 
   def self.tmp_path
-    "/tmp/giternal_test"
+    current_dir
   end
 
   def self.giternal_base
@@ -28,10 +32,6 @@ class GiternalHelper
 
   def self.base_project_dir
     tmp_path + '/main_repo' 
-  end
-
-  def self.run(*args)
-    `#{giternal_base}/bin/giternal #{args.join(' ')} 2>&1`
   end
 
   def self.create_repo(repo_name)
@@ -45,10 +45,11 @@ class GiternalHelper
 
   def self.add_to_config_file(repo_name)
     config_dir = tmp_path + '/main_repo/config'
+    repo_path = external_path(repo_name) 
     FileUtils.mkdir(config_dir) unless File.directory?(config_dir)
     Dir.chdir(config_dir) do
       `echo #{repo_name}: >> giternal.yml`
-      `echo '  repo: #{external_path(repo_name)}' >> giternal.yml`
+      `echo '  repo: #{repo_path}' >> giternal.yml`
       `echo '  path: dependencies' >> giternal.yml`
     end
   end
@@ -68,33 +69,6 @@ class GiternalHelper
     File.expand_path(tmp_path + "/main_repo/dependencies/#{repo_name}")
   end
 
-  def self.clean!
-    FileUtils.rm_rf tmp_path
-  end
-
-  def self.status_externals
-    Dir.chdir(tmp_path + '/main_repo') do
-      GiternalHelper.run('status')
-    end
-  end
-
-  def self.update_externals
-    Dir.chdir(tmp_path + '/main_repo') do
-      GiternalHelper.run('update')
-    end
-  end
-
-  def self.freeze_externals
-    Dir.chdir(tmp_path + '/main_repo') do
-      GiternalHelper.run('freeze')
-    end
-  end
-
-  def self.unfreeze_externals
-    Dir.chdir(tmp_path + '/main_repo') do
-      GiternalHelper.run('unfreeze')
-    end
-  end
   
   def self.repo_contents(path)
     Dir.chdir(path) do
