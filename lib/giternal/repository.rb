@@ -63,7 +63,7 @@ module Giternal
             end
             puts " " + post_message.black.on_yellow
           else
-            print "#{@name} has changed"
+            print "#{@name} has changed".yellow
             puts " " + post_message.black.on_yellow
             puts status
             puts log
@@ -147,7 +147,6 @@ module Giternal
 
     def detached?
       begin
-
         g = Git.open(repo_path)
         g.branch.current == false
       rescue ArgumentError
