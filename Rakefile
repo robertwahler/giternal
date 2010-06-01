@@ -10,6 +10,7 @@ begin
     gem.homepage = "http://github.com/pat-maddox/giternal"
     gem.authors = ["Pat Maddox"]
     gem.add_dependency 'term-ansicolor'
+    gem.add_dependency 'git'
 
     gem.add_development_dependency "rspec", ">= 1.2.9"
     gem.add_development_dependency "cucumber", ">= 0.6"

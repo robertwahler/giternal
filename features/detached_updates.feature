@@ -38,3 +38,21 @@ Feature: Update externals and pin them to specific commits
     Then the file "config/giternal.yml" should not contain the sha for "first_external" 
     When I run "giternal update --detach"
     Then the file "config/giternal.yml" should contain the sha for "first_external" 
+
+  Scenario: Getting the status detached repo
+    Given an external repository named 'first_external'
+    When I cd to "main_repo"
+    And I run "giternal update"
+    And I run "giternal status --config-update"
+    Then I should not see: 
+      """
+      [DETACHED]
+      """
+    When I run "giternal update --detach"
+    Then the file "config/giternal.yml" should contain the sha for "first_external" 
+    When I run "giternal status"
+    Then I should see matching:
+      """
+      .*\[DETACHED\]$
+      """
+

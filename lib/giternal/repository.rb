@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'term/ansicolor'
+require 'git'
 
 class String
   include Term::ANSIColor
@@ -28,37 +29,42 @@ module Giternal
 
       puts "Getting status of #{@name}" if verbose
       if frozen?
-        # TODO: giternal status should show changes even if frozen
+        post_message = execute_on_frozen { detached? ? "[DETACHED]" : "" }
         log = execute_on_frozen { `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr" 2>&1` } 
         actual_commit = log.gsub(/Last commit (.*) was(.*)/, '\1')
         message = "#{@name} is frozen"
         message = "#{message}: #{log}" 
         if ((actual_commit == @last_commit) || @last_commit.nil? )
-          puts message.cyan
+          print message.cyan
+          puts " " + post_message.black.on_yellow
         else
           message = "#{message}. Config last commit: #{@last_commit}" 
-          puts message.yellow.bold
+          print message.yellow.bold
+          puts " " + post_message.black.on_yellow
         end
         @last_commit = actual_commit
       elsif checked_out?
         if !File.exist?(repo_path + '/.git')
           raise "Directory '#{@name}' exists but is not a git repository"
         else
-          status = `cd #{repo_path} && git status 2>&1` 
-          log = `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr" 2>&1` 
+          post_message = detached? ? "[DETACHED]" : ""
+          status = `cd #{repo_path} && git status 2>&1`
+          log = `cd #{repo_path} && git log -1 --pretty=format:"Last commit %h was %cr" 2>&1`
           actual_commit = log.gsub(/Last commit (.*) was(.*)/, '\1')
           # check if clean, format one line if so
           if status.match(/nothing to commit/) then
             message = "#{@name} is clean"
             message = "#{message}: #{log}" 
             if ((actual_commit == @last_commit) || @last_commit.nil? )
-              puts message
+              print message
             else
               message = "#{message}. Config last commit: #{@last_commit}" 
-              puts message.yellow
+              print message.yellow
             end
+            puts " " + post_message.black.on_yellow
           else
-            puts "#{@name} has changed".yellow
+            print "#{@name} has changed"
+            puts " " + post_message.black.on_yellow
             puts status
             puts log
           end
@@ -137,6 +143,16 @@ module Giternal
 
     def frozen?
       File.exist?(repo_path + '/.git.frozen.tgz')
+    end
+
+    def detached?
+      begin
+
+        g = Git.open(repo_path)
+        g.branch.current == false
+      rescue ArgumentError
+        false
+      end
     end
 
     def checked_out?

@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pat Maddox"]
-  s.date = %q{2010-03-01}
+  s.date = %q{2010-06-01}
   s.default_executable = %q{giternal}
   s.email = %q{pat.maddox@gmail.com}
   s.executables = ["giternal"]
@@ -26,10 +26,14 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION.yml",
      "bin/giternal",
+     "config/cucumber.yml",
      "cucumber.yml",
      "features/checking_out_externals.feature",
+     "features/detached_updates.feature",
      "features/freeze_externals.feature",
      "features/steps/repository_steps.rb",
+     "features/support/aruba.rb",
+     "features/support/env.rb",
      "features/unfreeze_externals.feature",
      "giternal.gemspec",
      "giternal_helper.rb",
@@ -48,13 +52,13 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/pat-maddox/giternal}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{git externals}
   s.test_files = [
-    "spec/spec_helper.rb",
-     "spec/giternal/app_spec.rb",
+    "spec/giternal/app_spec.rb",
      "spec/giternal/repository_spec.rb",
-     "spec/giternal/yaml_config_spec.rb"
+     "spec/giternal/yaml_config_spec.rb",
+     "spec/spec_helper.rb"
   ]
 
   if s.respond_to? :specification_version then
@@ -63,11 +67,23 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<term-ansicolor>, [">= 0"])
+      s.add_runtime_dependency(%q<git>, [">= 0"])
+      s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
+      s.add_development_dependency(%q<cucumber>, [">= 0.6"])
+      s.add_development_dependency(%q<aruba>, [">= 0.1.7"])
     else
       s.add_dependency(%q<term-ansicolor>, [">= 0"])
+      s.add_dependency(%q<git>, [">= 0"])
+      s.add_dependency(%q<rspec>, [">= 1.2.9"])
+      s.add_dependency(%q<cucumber>, [">= 0.6"])
+      s.add_dependency(%q<aruba>, [">= 0.1.7"])
     end
   else
     s.add_dependency(%q<term-ansicolor>, [">= 0"])
+    s.add_dependency(%q<git>, [">= 0"])
+    s.add_dependency(%q<rspec>, [">= 1.2.9"])
+    s.add_dependency(%q<cucumber>, [">= 0.6"])
+    s.add_dependency(%q<aruba>, [">= 0.1.7"])
   end
 end
 
